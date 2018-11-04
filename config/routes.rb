@@ -50,5 +50,5 @@ Rails.application.routes.draw do
   get "/422", to: "errors#unacceptable"
   get "/500", to: "errors#internal_error"
 
-  resources :post, param: :slug
+  resources :item, param: :slug
 end

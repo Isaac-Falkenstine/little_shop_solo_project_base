@@ -16,7 +16,7 @@ class ItemsController < ApplicationController
 
   def show
     # @item = Item.find(params[:id])
-    @item = find_by_slug(params[:slug])
+    @item = Item.find_by_slug(params[:slug])
   end
 
   def edit
@@ -24,7 +24,7 @@ class ItemsController < ApplicationController
     @merchant = User.find(params[:merchant_id])
     render file: 'errors/not_found', status: 404 unless current_admin? || current_user == @merchant
     # @item = Item.find(params[:id])
-    @item = find_by_slug(params[:slug])
+    @item = Item.find_by_slug(params[:slug])
     @form_url = merchant_item_path(@merchant, @item)
   end
 
@@ -34,8 +34,8 @@ class ItemsController < ApplicationController
     render file: 'errors/not_found', status: 404 unless current_admin? || current_user == @merchant
 
     @item = @merchant.items.create(item_params)
-    Post.create(slug: to_slug(@item.name))
     if @item.save
+      @item.slug = @item.name
       if @item.image.nil? || @item.image.empty?
         @item.image = 'https://picsum.photos/200/300/?image=0&blur=true'
         @item.save
@@ -51,14 +51,14 @@ class ItemsController < ApplicationController
   def update
     render file: 'errors/not_found', status: 404 if current_user.nil?
     @merchant = User.find(params[:merchant_id])
-    item_id = :item_id
+    item_slug = :item_slug
     if params[:id]
       item_id = :id
     end
     # @item = Item.find(params[item_id])
-    @item = find_by_slug(params[:slug])
-    
-    Post.create(slug: to_slug(@item.name))
+    @item = Item.find_by_slug(params[:item_slug])
+    binding.pry
+
     render file: 'errors/not_found', status: 404 unless current_admin? || current_user == @merchant
 
     if request.fullpath.split('/')[-1] == 'disable'
@@ -73,6 +73,7 @@ class ItemsController < ApplicationController
       redirect_to current_admin? ? merchant_items_path(@merchant) : dashboard_items_path
     else
       @item.update(item_params)
+      @item.slug = @item.name
       if @item.save
         flash[:success] = "Item updated"
         redirect_to current_admin? ? merchant_items_path(@merchant) : dashboard_items_path
@@ -82,7 +83,6 @@ class ItemsController < ApplicationController
       end
     end
   end
-
 
   private
     def item_params

@@ -28,6 +28,6 @@ class Item < ApplicationRecord
   end
 
   def to_param
-    slug
+    slug = name
   end
 end

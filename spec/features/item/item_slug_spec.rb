@@ -10,9 +10,11 @@ RSpec.describe 'Item Slug' do
     end
 
     describe 'visiting /items' do
-      it 'should show all active items' do
+      it 'should show a slug in the name' do
         visit items_path
-        save_and_open_page
+
+        click_on("#{@item.name}")
+        # save_and_open_page
       end
     end
   end

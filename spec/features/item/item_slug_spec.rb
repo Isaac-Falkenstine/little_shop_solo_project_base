@@ -15,6 +15,7 @@ RSpec.describe 'Item Slug' do
 
         click_on("#{@item.name}")
         # save_and_open_page
+        expect(current_path).to eq("/items/#{@item.name}")
       end
     end
   end

@@ -15,7 +15,6 @@ class ItemsController < ApplicationController
   end
 
   def show
-    # @item = Item.find(params[:id])
     @item = Item.find_by_slug(params[:slug])
   end
 
@@ -51,13 +50,13 @@ class ItemsController < ApplicationController
   def update
     render file: 'errors/not_found', status: 404 if current_user.nil?
     @merchant = User.find(params[:merchant_id])
-    item_slug = :item_slug
+    item_id = :item_id
+
     if params[:id]
       item_id = :id
     end
-    # @item = Item.find(params[item_id])
-    @item = Item.find_by_slug(params[:item_slug])
-    binding.pry
+
+    @item = Item.find(params[:item_slug])
 
     render file: 'errors/not_found', status: 404 unless current_admin? || current_user == @merchant
 
@@ -86,6 +85,6 @@ class ItemsController < ApplicationController
 
   private
     def item_params
-      params.require(:item).permit(:user_id, :name, :description, :image, :price, :inventory)
+      params.require(:item).permit(:user_id, :name, :description, :image, :price, :inventory, :slug)
     end
 end

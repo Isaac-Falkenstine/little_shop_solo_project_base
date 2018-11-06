@@ -69,7 +69,6 @@ class ItemsController < ApplicationController
       redirect_to current_admin? ? merchant_items_path(@merchant) : dashboard_items_path
     else
       @item.update(item_params)
-      @item.slug = @item.name
       if @item.save
         flash[:success] = "Item updated"
         redirect_to current_admin? ? merchant_items_path(@merchant) : dashboard_items_path

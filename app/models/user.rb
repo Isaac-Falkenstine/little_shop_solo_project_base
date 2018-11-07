@@ -11,6 +11,21 @@ class User < ApplicationRecord
 
   before_create :generate_slug
 
+  def customer_emails
+    items.joins(orders: :user).distinct.pluck('users.email')
+  end
+
+  def not_customers
+    User.select('users.*').where.not(email: customer_emails).distinct.pluck('users.email')
+  end
+
+  def self.to_csv
+   attributes =  %w{email}
+    CSV generate(headers: true) do |csv|
+     csv << attributes.map{ |attr| user.send(attr) }
+    end
+  end
+
   def merchant_orders(status=nil)
     if status.nil?
       Order.distinct.joins(:items).where('items.user_id=?', self.id)
@@ -141,21 +156,6 @@ class User < ApplicationRecord
 
   def self.slowest_merchants(quantity)
     merchant_by_speed(quantity, :desc)
-  end
-
-  def customer_emails
-    items.joins(orders: :user).distinct.pluck('users.email')
-  end
-
-  def not_customers
-    User.select('users.*').where.not(email: customer_emails).distinct.pluck('users.email')
-  end
-
-  def self.to_csv
-   attributes =  %w{email}
-    CSV generate(headers: true) do |csv|
-     csv << attributes.map{ |attr| user.send(attr) }
-    end
   end
 
   def to_param

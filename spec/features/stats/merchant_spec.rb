@@ -131,8 +131,9 @@ RSpec.describe 'Merchant Stats' do
       expect(page).to have_content("Customer Emails")
       expect(page).to have_content("Potential Customer Emails")
 
-      within ('.customer-emails')
-      click_on "Customer Emails"
+      within ('.customer-emails') do
+        click_on "Customer Emails"
+      end
 
       visit dashboard_path
 

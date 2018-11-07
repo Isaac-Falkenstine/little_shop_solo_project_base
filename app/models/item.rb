@@ -3,13 +3,15 @@ class Item < ApplicationRecord
   has_many :order_items
   has_many :orders, through: :order_items
 
+  before_create :generate_slug
+
   validates_presence_of :name, :description
   validates :price, presence: true, numericality: {
-    only_integer: false, 
+    only_integer: false,
     greater_than_or_equal_to: 0
   }
   validates :inventory, presence: true, numericality: {
-    only_integer: true, 
+    only_integer: true,
     greater_than_or_equal_to: 0
   }
 
@@ -22,4 +24,19 @@ class Item < ApplicationRecord
       .order('total_ordered desc')
       .limit(quantity)
   end
+
+  def self.add_slugs
+    update(slug: to_slug(name))
+  end
+
+  def to_param
+    slug
+  end
+end
+
+
+private
+
+def generate_slug
+  self.slug = name.downcase.delete(" ") + SecureRandom.uuid if name
 end

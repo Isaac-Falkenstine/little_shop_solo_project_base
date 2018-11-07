@@ -36,7 +36,7 @@ class UsersController < ApplicationController
       end
     end
 
-  def update
+    def update
     render file: 'errors/not_found', status: 404 if current_user.nil?
     if current_user && params[:slug]
       if current_admin? || (current_user.slug == params[:slug])

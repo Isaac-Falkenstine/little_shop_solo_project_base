@@ -12,7 +12,7 @@ class UsersController < ApplicationController
       if current_admin?
         @user = User.find_by(slug: params[:slug])
         if @user.merchant?
-          redirect_to merchant_path(@user.id)
+          redirect_to merchant_path(@user)
         end
       else
         render file: 'errors/not_found', status: 404
@@ -25,18 +25,18 @@ class UsersController < ApplicationController
   end
 
   def edit
-    render file: 'errors/not_found', status: 404 if current_user.nil?
-    if current_user
-      @user = current_user
-      if current_admin? && params[:slug]
-        @user = User.find_by(slug: params[:slug])
-      elsif current_user && params[:slug] && current_user.id != params[:slug]
-        render file: 'errors/not_found', status: 404
+      render file: 'errors/not_found', status: 404 if current_user.nil?
+      if current_user
+        @user = current_user
+        if current_admin? && params[:slug]
+           @user = User.find_by(slug: params[:slug])
+         elsif current_user && params[:slug] && current_user.slug != params[:slug]
+          render file: 'errors/not_found', status: 404
+        end
       end
     end
-  end
 
-  def update
+    def update
     render file: 'errors/not_found', status: 404 if current_user.nil?
     if current_user && params[:slug]
       if current_admin? || (current_user.slug == params[:slug])

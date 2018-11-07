@@ -1,6 +1,6 @@
 <h1>Merchant Dashboard</h1>
 
-<p><%= link_to "Edit Profile Data", current_admin? ? edit_user_path(@merchant.id) : profile_edit_path %></p>
+<p><%= link_to "Edit Profile Data", current_admin? ? edit_user_path(@merchant) : profile_edit_path %></p>
 <%if current_admin?%>
 <p><%= link_to "Edit User's Slug", current_admin? ? edit_admin_user_path(@merchant) : profile_edit_path %></p>
 <%end%>
@@ -93,3 +93,14 @@
   <% end %>
   <%= button_to "Upgrade to Merchant", user_path(@merchant), method: :patch, params: { toggle: :role } %>
 <% end %>
+
+<%if current_user.merchant? %>
+  <h3> Download to CSV </h3>
+  <div class="customer-emails">
+  <p><%= link_to "Customer Emails", dashboard_path(format: :csv, type:"customer_emails") %></p>
+  </div>
+
+  <div class="potential-emails">
+  <p><%= link_to "Potential Customer Emails", dashboard_path(format: :csv, type:"not_customers") %></p>
+  </div>
+<%end%>

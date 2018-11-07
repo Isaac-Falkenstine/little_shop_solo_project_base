@@ -1,3 +1,4 @@
+
 Rails.application.routes.draw do
   root 'welcome#show'
 
@@ -18,6 +19,8 @@ Rails.application.routes.draw do
   namespace :dashboard do
     resources :orders, only: [:index]
     resources :items, only: [:index]
+    post "/dashboard/customer_emails", to: "dashboard#customer_emails", as: "customer_emails"
+    post "/dashboard/not_customers", to: "dashboard#not_customers", as: "not_customers"
   end
 
   resources :orders, only: [:index, :show, :create] do

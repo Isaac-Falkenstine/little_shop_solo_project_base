@@ -37,7 +37,8 @@ RSpec.describe Item, type: :model do
   describe 'Instance Methods' do
     it ".generate_slug" do
       item = create(:item, name: "item name")
-      expect(item.slug). to eq("itemname" + SecureRandom.uuid)
+      #I did this because 2 items can have the same name, using SecureRandom.uuid they all
+      #have unique URLs
       expect(item.slug).to include("itemname")
     end
   end

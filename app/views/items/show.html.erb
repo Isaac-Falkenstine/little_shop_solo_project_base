@@ -33,4 +33,7 @@
 <% if current_admin? || current_user == @item.user %>
 <%= link_to 'Edit', edit_merchant_item(@item.user, @item) %> |
 <% end %>
+<% if current_admin? %>
+<td><%= link_to "Edit Item's Slug", edit_admin_item_path(@item) %></td>
+<%end%>
 <%= link_to 'Back', items_path %>

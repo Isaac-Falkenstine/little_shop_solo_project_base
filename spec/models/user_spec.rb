@@ -299,7 +299,8 @@ RSpec.describe User, type: :model do
     end
     it ".generate_slug" do
       user = create(:user, name: "Isaac Falkenstine")
-      expect(user.slug). to eq("isaacfalkenstine" + SecureRandom.uuid)
+      #I did this because 2 items can have the same name, using SecureRandom.uuid they all
+      #have unique URLs
       expect(user.slug).to include("isaacfalkenstine")
     end
   end

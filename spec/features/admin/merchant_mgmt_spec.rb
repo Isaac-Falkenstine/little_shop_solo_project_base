@@ -58,6 +58,17 @@ RSpec.describe 'Admin-only merchant management' do
     expect(current_path).to eq(profile_path)
   end
 
+  it 'blocks regular users from clicking a merchant name to get to a show page' do
+    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
+
+    visit merchants_path
+    expect(page).to have_content(@active_merchant.name)
+    expect(page).to_not have_link(@active_merchant.name)
+
+    visit merchant_path(@active_merchant)
+    expect(page.status_code).to eq(404)
+  end
+
   it 'allows admin to update merchants slug' do
     visit login_path
       fill_in :email, with: @admin.email
@@ -76,25 +87,25 @@ RSpec.describe 'Admin-only merchant management' do
       expect(current_path).to eq('/merchants/thisisanewslug')
     end
 
-  it 'blocks regular users from clicking a merchant name to get to a show page' do
-    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
-
-    visit merchants_path
-    expect(page).to have_content(@active_merchant.name)
-    expect(page).to_not have_link(@active_merchant.name)
+    it 'does not allow admin to download csvs' do
+    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
 
     visit merchant_path(@active_merchant)
-    expect(page.status_code).to eq(404)
+
+    expect(page).to_not have_content("Download CSV")
+    expect(page).to_not have_content("Customer Emails")
+    expect(page).to_not have_content("Potential Customer Information")
   end
+
   describe 'redirects admin users to a proper page' do
     scenario 'when a user path is really a merchant' do
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
-      visit user_path(@active_merchant.id)
-      expect(current_path).to eq(merchant_path(@active_merchant.id))
+      visit user_path(@active_merchant)
+      expect(current_path).to eq(merchant_path(@active_merchant))
     end
     scenario 'when a merchant path is really a user' do
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@admin)
-      visit merchant_path(@user.id)
+      visit merchant_path(@user)
       expect(current_path).to eq(user_path(@user))
     end
   end

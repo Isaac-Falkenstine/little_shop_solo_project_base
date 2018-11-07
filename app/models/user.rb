@@ -7,9 +7,9 @@ class User < ApplicationRecord
   validates_presence_of :name, :address, :city, :state, :zip
   validates :email, presence: true, uniqueness: true
 
-  before_create :generate_slug
-
   enum role: %w(user merchant admin)
+
+  before_create :generate_slug
 
   def merchant_orders(status=nil)
     if status.nil?
@@ -163,6 +163,7 @@ class User < ApplicationRecord
   end
 
   private
+
   def generate_slug
     self.slug = name.downcase.delete(" ") + SecureRandom.uuid if name
   end

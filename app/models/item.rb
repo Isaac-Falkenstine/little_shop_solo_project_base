@@ -3,8 +3,6 @@ class Item < ApplicationRecord
   has_many :order_items
   has_many :orders, through: :order_items
 
-  before_create :generate_slug
-
   validates_presence_of :name, :description
   validates :price, presence: true, numericality: {
     only_integer: false,
@@ -14,6 +12,8 @@ class Item < ApplicationRecord
     only_integer: true,
     greater_than_or_equal_to: 0
   }
+
+  before_create :generate_slug
 
   def self.popular_items(quantity)
     select('items.*, sum(order_items.quantity) as total_ordered')
@@ -32,11 +32,10 @@ class Item < ApplicationRecord
   def to_param
     slug
   end
-end
 
+  private
 
-private
-
-def generate_slug
-  self.slug = name.downcase.delete(" ") + SecureRandom.uuid if name
+  def generate_slug
+    self.slug = name.downcase.delete(" ") + SecureRandom.uuid if name
+  end
 end

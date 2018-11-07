@@ -7,13 +7,11 @@ class Admin::UsersController < ApplicationController
 
   def update
     @user = User.find_by(slug: params[:slug])
-    if @user.update(user_params)
+    @user.update(user_params)
       flash[:success] = "The user's slug was successfully updated."
       redirect_to user_path(@user)
-    else
-      render file: 'errors/not_found', status: 404
-    end
   end
+
   
   private
 

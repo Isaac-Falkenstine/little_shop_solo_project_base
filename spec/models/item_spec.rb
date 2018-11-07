@@ -35,5 +35,10 @@ RSpec.describe Item, type: :model do
   end
 
   describe 'Instance Methods' do
+    it ".generate_slug" do
+      item = create(:item, name: "item name")
+      expect(item.slug). to eq("itemname" + SecureRandom.uuid)
+      expect(item.slug).to include("itemname")
+    end
   end
 end

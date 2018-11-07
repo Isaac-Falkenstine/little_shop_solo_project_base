@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   get '/dashboard', to: 'dashboard#show'
   namespace :dashboard do
     resources :orders, only: [:index]
-    resources :items, param: :slug, only: [:index]
+    resources :items, only: [:index]
   end
 
   resources :orders, only: [:index, :show, :create] do
@@ -25,22 +25,26 @@ Rails.application.routes.draw do
   end
   resources :order_items, only: [:update]
 
-  # resources :items, only: [:index, :show]
-  resources :items, param: :slug, only: [:index, :show]
-  resources :users, only: [:index, :new, :create, :edit, :show, :update] do
+  resources :items, only: [:index, :show], param: :slug
+  resources :users, only: [:index, :new, :create, :edit, :show, :update], param: :slug do
     resources :orders, only: [:index, :update]
     patch 'enable', to: 'users#update'
     patch 'disable', to: 'users#update'
   end
 
-  resources :merchants, only: [:index, :update, :show] do
+  resources :merchants, only: [:index, :update, :show], param: :slug do
     resources :orders, only: [:index]
-    resources :items, param: :slug, only: [:index, :new, :edit, :create, :update] do
+    resources :items, only: [:index, :new, :edit, :create, :update], param: :slug  do
       patch 'enable', to: 'items#update'
       patch 'disable', to: 'items#update'
     end
   end
 
+  namespace :admin do
+    resources :users, only: [:edit, :update], param: :slug
+    resources :items, only: [:edit, :update], param: :slug
+  end
+  
   resources :carts, path: '/cart', only: [:index]
   delete '/cart', to: 'carts#empty'
   delete '/cart/:item_id', to: 'carts#remove'
@@ -50,5 +54,6 @@ Rails.application.routes.draw do
   get "/404", to: "errors#not_found"
   get "/422", to: "errors#unacceptable"
   get "/500", to: "errors#internal_error"
+
 
 end

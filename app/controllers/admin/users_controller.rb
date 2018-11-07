@@ -14,14 +14,14 @@ class Admin::UsersController < ApplicationController
       render file: 'errors/not_found', status: 404
     end
   end
+  
+  private
 
+  def user_params
+    params.require(:user).permit(:slug)
+  end
 
- private
-
-def user_params
-  params.require(:user).permit(:slug)
-end
-
-def require_admin
- redirect_to root_path unless current_admin?
+  def require_admin
+   redirect_to root_path unless current_admin?
+  end
 end

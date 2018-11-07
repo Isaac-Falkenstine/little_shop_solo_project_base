@@ -7,6 +7,8 @@ class User < ApplicationRecord
   validates_presence_of :name, :address, :city, :state, :zip
   validates :email, presence: true, uniqueness: true
 
+  before_create :generate_slug
+
   enum role: %w(user merchant admin)
 
   def merchant_orders(status=nil)
